@@ -1,5 +1,6 @@
 import firebase from "firebase/compat/app";
 import firestore from "firebase/compat/firestore";
+import auth from "firebase/compat/auth";
 
 const config = {
   apiKey: "AIzaSyAkBsf8iED8hHkZWuhedcwQ0qzHkG3h6xc",
@@ -14,8 +15,8 @@ const config = {
 firebase.initializeApp(config);
 
 const db = firebase.firestore();
+const firebaseAuth = firebase.auth();
 
-const puzzlesRef = db.collection("puzzles");
 const profileRef = db.collection("profile");
 
-export { puzzlesRef, profileRef };
+export { profileRef, firebaseAuth };

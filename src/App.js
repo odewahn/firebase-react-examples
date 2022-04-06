@@ -3,11 +3,14 @@ import "./App.css";
 import { useState, useEffect } from "react";
 import { profileRef } from "./firebase";
 
+import { AuthConsumer } from "./AuthContext";
+
 function App() {
   const [name, setName] = useState("");
   const [handle, setHandle] = useState("");
   const [profiles, setProfiles] = useState([]);
 
+  // Load the initial list of profile data
   useEffect(() => {
     getProfilesRT();
   }, []);
@@ -103,63 +106,69 @@ function App() {
       console.error("An error occurred:", e);
     }
   };
-  return (
-    <div className="App">
-      <h1>Hello, world!</h1>
 
-      <b>Name:</b>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => {
-          setName(e.target.value);
-        }}
-      />
+  const theApp = (state) => {
+    return (
+      <div className="App">
+        <h1>
+          Hello, {state.user} at {state.counter}
+        </h1>
 
-      <b>Handle:</b>
-      <input
-        type="text"
-        value={handle}
-        onChange={(e) => {
-          setHandle(e.target.value);
-        }}
-      />
-      <button onClick={handleSubmit}>Click me</button>
-      <ul>
-        {profiles.map((p) => {
-          return (
-            <li key={p.id}>
-              {p.id} =>
-              <input
-                type="text"
-                name="name"
-                value={p.name}
-                onChange={(e) => {
-                  updateProfile(p.id, e);
-                }}
-              />
-              <input
-                type="text"
-                name="handle"
-                value={p.handle}
-                onChange={(e) => {
-                  updateProfile(p.id, e);
-                }}
-              />
-              <span
-                style={{ marginLeft: "20px" }}
-                onClick={() => {
-                  deleteProfile(p.id);
-                }}
-              >
-                &times;
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
+        <b>Name:</b>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+        />
+
+        <b>Handle:</b>
+        <input
+          type="text"
+          value={handle}
+          onChange={(e) => {
+            setHandle(e.target.value);
+          }}
+        />
+        <button onClick={handleSubmit}>Click me</button>
+        <ul>
+          {profiles.map((p) => {
+            return (
+              <li key={p.id}>
+                {p.id} =>
+                <input
+                  type="text"
+                  name="name"
+                  value={p.name}
+                  onChange={(e) => {
+                    updateProfile(p.id, e);
+                  }}
+                />
+                <input
+                  type="text"
+                  name="handle"
+                  value={p.handle}
+                  onChange={(e) => {
+                    updateProfile(p.id, e);
+                  }}
+                />
+                <span
+                  style={{ marginLeft: "20px" }}
+                  onClick={() => {
+                    deleteProfile(p.id);
+                  }}
+                >
+                  &times;
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  };
+  return <AuthConsumer>{(user) => theApp(user)}</AuthConsumer>;
 }
 
 export default App;
