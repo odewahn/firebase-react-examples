@@ -92,13 +92,14 @@ function App() {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (uid) => {
     try {
       console.log("Trying to add a new rec");
       var profile = {
         name: name,
         handle: handle,
         created_at: new Date().toISOString(),
+        uid: uid,
       };
       const newProfile = await profileRef.add(profile);
       console.log(newProfile);
@@ -110,9 +111,7 @@ function App() {
   const theApp = (state) => {
     return (
       <div className="App">
-        <h1>
-          Hello, {state.user} at {state.counter}
-        </h1>
+        <h1>Hello, {state.user.email}</h1>
 
         <b>Name:</b>
         <input
@@ -131,7 +130,7 @@ function App() {
             setHandle(e.target.value);
           }}
         />
-        <button onClick={handleSubmit}>Click me</button>
+        <button onClick={() => handleSubmit(state.user.uid)}>Click me</button>
         <ul>
           {profiles.map((p) => {
             return (
