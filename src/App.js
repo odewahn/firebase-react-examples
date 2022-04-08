@@ -9,6 +9,7 @@ function App() {
   const [name, setName] = useState("");
   const [handle, setHandle] = useState("");
   const [profiles, setProfiles] = useState([]);
+  const [user, setUser] = useState({});
 
   // Load the initial list of profile data
   useEffect(() => {
@@ -19,37 +20,39 @@ function App() {
   const getProfilesRT = async () => {
     var newProfiles = [];
     try {
-      const p = await profileRef.onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          // Create a new record that has been changed.
-          const changedRec = {
-            id: change.doc.id,
-            ...change.doc.data(),
-          };
-          // If the record is beind added, then append to the array
-          if (change.type === "added") {
-            newProfiles = [...newProfiles, changedRec];
-          }
-          // If the record is modified, merge the new values in
-          if (change.type == "modified") {
-            // Find the id for the item that is changed
-            const changedIdx = newProfiles.findIndex(
-              (item) => item.id == changedRec.id
-            );
-            // Update the item in the list
-            newProfiles = newProfiles.map((item, idx) =>
-              idx == changedIdx ? changedRec : item
-            );
-          }
-          //If the record is deleted, then remove it
-          if (change.type == "removed") {
-            newProfiles = newProfiles.filter(
-              (item) => item.id !== changedRec.id
-            );
-          }
+      const p = await profileRef
+        .where("uid", "==", user.uid)
+        .onSnapshot((snapshot) => {
+          snapshot.docChanges().forEach((change) => {
+            // Create a new record that has been changed.
+            const changedRec = {
+              id: change.doc.id,
+              ...change.doc.data(),
+            };
+            // If the record is beind added, then append to the array
+            if (change.type === "added") {
+              newProfiles = [...newProfiles, changedRec];
+            }
+            // If the record is modified, merge the new values in
+            if (change.type == "modified") {
+              // Find the id for the item that is changed
+              const changedIdx = newProfiles.findIndex(
+                (item) => item.id == changedRec.id
+              );
+              // Update the item in the list
+              newProfiles = newProfiles.map((item, idx) =>
+                idx == changedIdx ? changedRec : item
+              );
+            }
+            //If the record is deleted, then remove it
+            if (change.type == "removed") {
+              newProfiles = newProfiles.filter(
+                (item) => item.id !== changedRec.id
+              );
+            }
+          });
+          setProfiles(newProfiles);
         });
-        setProfiles(newProfiles);
-      });
     } catch (err) {
       console.log("error getting profiles", err);
     }
@@ -109,6 +112,8 @@ function App() {
   };
 
   const theApp = (state) => {
+    setUser(state.user);
+    console.log(state);
     return (
       <div className="App">
         <h1>Hello, {state.user.email}</h1>
@@ -167,7 +172,7 @@ function App() {
       </div>
     );
   };
-  return <AuthConsumer>{(user) => theApp(user)}</AuthConsumer>;
+  return <AuthConsumer>{(state) => theApp(state)}</AuthConsumer>;
 }
 
 export default App;
