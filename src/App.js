@@ -25,6 +25,7 @@ function App() {
     try {
       const p = await profileRef
         .where("uid", "==", theContext.user.uid)
+        .orderBy("created_at")
         .onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
             // Create a new record that has been changed.
