@@ -5,7 +5,6 @@ import firebase from "firebase/compat/app";
 const firebaseAuth = firebase.auth();
 
 const AuthContext = createContext();
-//const firebaseAuth = firebase.auth();
 
 const AuthProvider = (props) => {
   const [user, setUser] = useState({});
@@ -64,6 +63,4 @@ const AuthProvider = (props) => {
   );
 };
 
-const AuthConsumer = AuthContext.Consumer;
-
-export { AuthProvider, AuthConsumer };
+export { AuthProvider, AuthContext };

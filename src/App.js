@@ -1,27 +1,30 @@
 import "./App.css";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { profileRef } from "./firebase";
 
-import { AuthConsumer } from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 function App() {
   const [name, setName] = useState("");
   const [handle, setHandle] = useState("");
   const [profiles, setProfiles] = useState([]);
-  const [user, setUser] = useState({});
+
+  const theContext = useContext(AuthContext);
+
+  console.log("the context is", theContext);
 
   // Load the initial list of profile data
   useEffect(() => {
     getProfilesRT();
-  }, []);
+  }, [theContext]);
 
   // Update the list of profiles
   const getProfilesRT = async () => {
     var newProfiles = [];
     try {
       const p = await profileRef
-        .where("uid", "==", user.uid)
+        .where("uid", "==", theContext.user.uid)
         .onSnapshot((snapshot) => {
           snapshot.docChanges().forEach((change) => {
             // Create a new record that has been changed.
@@ -111,68 +114,65 @@ function App() {
     }
   };
 
-  const theApp = (state) => {
-    setUser(state.user);
-    console.log(state);
-    return (
-      <div className="App">
-        <h1>Hello, {state.user.email}</h1>
+  return (
+    <div className="App">
+      <h1>Hello {theContext.user.email}</h1>
 
-        <b>Name:</b>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
+      <b>Name:</b>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => {
+          setName(e.target.value);
+        }}
+      />
 
-        <b>Handle:</b>
-        <input
-          type="text"
-          value={handle}
-          onChange={(e) => {
-            setHandle(e.target.value);
-          }}
-        />
-        <button onClick={() => handleSubmit(state.user.uid)}>Click me</button>
-        <ul>
-          {profiles.map((p) => {
-            return (
-              <li key={p.id}>
-                {p.id} =>
-                <input
-                  type="text"
-                  name="name"
-                  value={p.name}
-                  onChange={(e) => {
-                    updateProfile(p.id, e);
-                  }}
-                />
-                <input
-                  type="text"
-                  name="handle"
-                  value={p.handle}
-                  onChange={(e) => {
-                    updateProfile(p.id, e);
-                  }}
-                />
-                <span
-                  style={{ marginLeft: "20px" }}
-                  onClick={() => {
-                    deleteProfile(p.id);
-                  }}
-                >
-                  &times;
-                </span>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
-  };
-  return <AuthConsumer>{(state) => theApp(state)}</AuthConsumer>;
+      <b>Handle:</b>
+      <input
+        type="text"
+        value={handle}
+        onChange={(e) => {
+          setHandle(e.target.value);
+        }}
+      />
+      <button onClick={() => handleSubmit(theContext.user.uid)}>
+        Click me
+      </button>
+      <ul>
+        {profiles.map((p) => {
+          return (
+            <li key={p.id}>
+              {p.id} =>
+              <input
+                type="text"
+                name="name"
+                value={p.name}
+                onChange={(e) => {
+                  updateProfile(p.id, e);
+                }}
+              />
+              <input
+                type="text"
+                name="handle"
+                value={p.handle}
+                onChange={(e) => {
+                  updateProfile(p.id, e);
+                }}
+              />
+              <span
+                style={{ marginLeft: "20px" }}
+                onClick={() => {
+                  deleteProfile(p.id);
+                }}
+              >
+                &times;
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
 }
 
 export default App;
