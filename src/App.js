@@ -139,6 +139,7 @@ function App() {
       <button onClick={() => handleSubmit(theContext.user.uid)}>
         Click me
       </button>
+      <button onClick={() => console.log(theContext.user)}>Print user</button>
       <ul>
         {profiles.map((p) => {
           return (

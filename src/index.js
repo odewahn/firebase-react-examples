@@ -5,17 +5,18 @@ import { Route, BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Login from "./Login";
+import EmailLogin from "./EmailLogin";
 
 import { AuthProvider } from "./AuthContext";
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthProvider>
-      <Router>
-        <Route exact path="/" component={Login} />
+    <Router>
+      <AuthProvider>
+        <Route exact path="/" component={EmailLogin} />
         <Route exact path="/profiles" component={App} />
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );

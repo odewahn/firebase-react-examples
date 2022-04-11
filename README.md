@@ -1,3 +1,43 @@
+# Example firebase rules for data protection
+
+From https://github.com/PacktPublishing/React.js-Academy-for-Beginners-with-Firebase
+
+```
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /boards/{docId} {
+      allow read: if resource.data.board.user == request.auth.uid;
+      allow create, update: if request.resource.data.board.title is string
+      	&& request.resource.data.board.background is string
+        && request.resource.data.board.createdAt is timestamp
+        && request.resource.data.board.user == request.auth.uid;
+      allow delete: if resource.data.board.user == request.auth.uid;
+
+    }
+
+    match /lists/{docId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.resource.data.list.title is string
+      	&& request.resource.data.list.board is string
+        && request.resource.data.list.createdAt is timestamp
+        && request.resource.data.list.user == request.auth.uid;
+      allow delete: if resource.data.list.user == request.auth.uid;
+    }
+
+     match /cards/{docId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.resource.data.card.text is string
+      	&& request.resource.data.card.listId is string
+        && request.resource.data.card.createdAt is timestamp
+        && request.resource.data.card.user == request.auth.uid
+      allow delete: if resource.data.card.user == request.auth.uid;
+    }
+
+  }
+}
+```
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
