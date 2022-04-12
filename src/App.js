@@ -12,8 +12,6 @@ function App() {
 
   const theContext = useContext(AuthContext);
 
-  console.log("the context is", theContext);
-
   // Load the initial list of profile data
   useEffect(() => {
     getProfilesRT();

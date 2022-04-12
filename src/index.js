@@ -4,7 +4,7 @@ import { Route, BrowserRouter as Router } from "react-router-dom";
 
 import "./index.css";
 import App from "./App";
-import Login from "./Login";
+import ConfirmLogin from "./ConfirmLogin";
 import EmailLogin from "./EmailLogin";
 
 import { AuthProvider } from "./AuthContext";
@@ -14,6 +14,7 @@ ReactDOM.render(
     <Router>
       <AuthProvider>
         <Route exact path="/" component={EmailLogin} />
+        <Route exact path="/confirm" component={ConfirmLogin} />
         <Route exact path="/profiles" component={App} />
       </AuthProvider>
     </Router>

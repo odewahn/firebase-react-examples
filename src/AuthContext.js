@@ -16,19 +16,19 @@ const AuthProvider = (props) => {
 
   // Setup listener for the user
   useEffect(() => {
-    firebaseAuth.onAuthStateChanged((fbUser) => {
-      console.log("logging in", fbUser);
-      if (fbUser) {
-        console.log("Setting some user state");
-        setUser(fbUser);
+    firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("loggin in", user);
+        setUser(user);
       } else {
-        console.log("deleting some user state");
+        console.log("loggin out");
         setUser({});
       }
     });
   }, []);
 
   // Try email link signup
+  // This comes straight from the firebase docs
   useEffect(() => {
     // Confirm the link is a sign-in with email link.
     if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
@@ -49,7 +49,7 @@ const AuthProvider = (props) => {
         .signInWithEmailLink(email, window.location.href)
         .then((result) => {
           // Clear email from storage.
-          window.localStorage.removeItem("emailForSignIn");
+          //window.localStorage.removeItem("emailForSignIn");
           // You can access the new user via result.user
           // Additional user info profile not available via:
           // result.additionalUserInfo.profile == null
@@ -79,8 +79,8 @@ const AuthProvider = (props) => {
     try {
       e.preventDefault();
       await firebaseAuth.signInWithEmailAndPassword(email, password);
-      history.push("/profiles/");
-      console.log("logged in!");
+      console.log("this is the right spot");
+      history.push({ pathname: "/profiles/", search: "" });
     } catch (error) {
       //add error handling soon
       console.log("An error occurred", error);
@@ -89,7 +89,7 @@ const AuthProvider = (props) => {
 
   const emailLinkLogin = async (email, e) => {
     const actionCodeSettings = {
-      url: "http://localhost:3000/profiles",
+      url: "http://localhost:3000/confirm",
       handleCodeInApp: true,
     };
     try {
